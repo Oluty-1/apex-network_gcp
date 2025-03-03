@@ -3,9 +3,9 @@ services:
   apexapp:
     build:
       context: .
-      dockerfile: Docker-files/app/Dockerfile
-      # dockerfile: ./Dockerfile
-    image: oluty/apexapp
+      # dockerfile: Docker-files/app/Dockerfile
+      dockerfile: ./Dockerfile
+    # image: oluty/apexapp
     container_name: apexapp
     ports:
       - "3000:3000"
