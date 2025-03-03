@@ -1,0 +1,5 @@
+.idea
+.env
+main
+testutils/mocks
+cover.out.tmp
