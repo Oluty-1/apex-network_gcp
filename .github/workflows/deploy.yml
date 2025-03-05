@@ -1,0 +1,33 @@
+name: Build and Push Docker Image to GCR
+
+on:
+  push:
+    branches:
+      - main
+env:
+  PROJECT_ID: genial-union-452320-a6
+  IMAGE_NAME: apexapp
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Configure Docker for Google Cloud authentication
+        run: gcloud auth configure-docker
+
+      - name: Build Docker image
+        run: docker build -t gcr.io/${{ env.GCP_PROJECT_ID }}/apexapp:latest .
+
+      - name: Push Docker image to Google Container Registry
+        run: docker push gcr.io/${{ env.GCP_PROJECT_ID }}/apexapp:latest
