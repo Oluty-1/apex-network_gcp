@@ -5,7 +5,7 @@ on:
     branches:
       - main
 env:
-  PROJECT_ID: genial-union-452320-a6
+  GCP_PROJECT_ID: genial-union-452320-a6
   IMAGE_NAME: apexapp
 
 jobs:
