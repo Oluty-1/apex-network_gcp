@@ -6,6 +6,7 @@ on:
       - main
 env:
   GCP_PROJECT_ID: genial-union-452320-a6
+  REPO: apex
   IMAGE_NAME: apexapp
 
 jobs:
@@ -14,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
@@ -30,6 +31,6 @@ jobs:
         run: docker build -t gcr.io/${{ env.GCP_PROJECT_ID }}/apexapp:latest .
 
       - name: Push Docker image to Google Container Registry
-        run: docker push gcr.io/${{ env.GCP_PROJECT_ID }}/apexapp:latest
+        run: docker push gcr.io/${{ env.GCP_PROJECT_ID }}/${{ REPO }}/apexapp:latest
 
 #
