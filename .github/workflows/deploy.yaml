@@ -18,8 +18,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+      - name: Set up Google Cloud Auth
+        uses: google-github-actions/auth@v1
         with:
           project_id: ${{ env.GCP_PROJECT_ID }}
         #  credentials_json: ${{ secrets.GCP_SA_KEY }}
