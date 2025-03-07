@@ -6,6 +6,7 @@ on:
       - main
 env:
   GCP_PROJECT_ID: genial-union-452320-a6
+  REGION: us-east1
   REPO: apex
   IMAGE_NAME: apexapp
 
@@ -24,13 +25,14 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Configure Docker for Google Cloud authentication
-        run: gcloud auth configure-docker
+      - name: Authenticate Docker to Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
       - name: Build Docker image
-        run: docker build -t gcr.io/${{ env.GCP_PROJECT_ID }}/apexapp:latest .
+        run: docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest .
 
-      - name: Push Docker image to Google Container Registry
-        run: docker push gcr.io/${{ env.GCP_PROJECT_ID }}/${{ REPO }}/apexapp:latest
+      - name: Push Docker image to Artifact Registry
+        run: docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest
 
-#
+
+        
