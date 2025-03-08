@@ -9,6 +9,9 @@ env:
   REGION: us-east1
   REPO: apex
   IMAGE_NAME: apexapp
+  INSTANCE_NAME: my-test-engine     
+  ZONE: us-east1-d          
+  APP_PORT: 80:3000  
 
 jobs:
   build-and-push:
@@ -27,11 +30,6 @@ jobs:
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-    #    with:
-    #      project_id: ${{ env.GCP_PROJECT_ID }}
-    # #     credentials_json: ${{ secrets.GCP_SA_KEY }}
-    #      service_account_key: ${{ secrets.GCP_SA_KEY }}
-    #      export_default_credentials: true
 
       - name: Authenticate Docker to Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
@@ -43,4 +41,12 @@ jobs:
         run: docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest
 
 
-        
+      - name: Deploy to Compute Engine
+        run: |
+          gcloud compute ssh ${{ env.INSTANCE_NAME }} \
+            --zone ${{ env.ZONE }} \
+            --command=" \
+              docker pull ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest \
+              && docker stop apex-app || true \
+              && docker rm apex-app || true \
+              && docker run -d --name apex-app -p ${{ env.APP_PORT }} ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest"
