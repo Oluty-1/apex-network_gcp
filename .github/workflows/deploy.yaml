@@ -9,7 +9,7 @@ env:
   REGION: us-east1
   REPO: apex
   IMAGE_NAME: apexapp
-  INSTANCE_NAME: my-test-engine     
+  INSTANCE_NAME: apex-engine     
   ZONE: us-east1-d          
   APP_PORT: 3000:3000  
 
@@ -50,3 +50,4 @@ jobs:
               && docker stop apex-app || true \
               && docker rm apex-app || true \
               && docker run -d --name apex-app -p ${{ env.APP_PORT }} ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest"
+              
