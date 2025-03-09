@@ -31,13 +31,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
 
-      - name: Test SSH Connection (Create Test Folder)
-        run: |
-          gcloud compute ssh ${{ env.INSTANCE_NAME }} \
-            --zone ${{ env.ZONE }} \
-            --command="mkdir -p ~/test-folder && ls -la ~/"
-            
-
       - name: Authenticate Docker to Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
