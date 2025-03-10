@@ -34,20 +34,24 @@ jobs:
       - name: Authenticate Docker to Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
-      - name: Build Docker image
-        run: docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest .
+      - name: Build and tag Docker image
+        run: |
+        BUILD_NUMBER=${{ github.run_number }}
+        docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:$BUILD_NUMBER .
 
       - name: Push Docker image to Artifact Registry
-        run: docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest
+        run: |
+        BUILD_NUMBER=${{ github.run_number }}
+        docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest
+        docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:$BUILD_NUMBER
 
 
       - name: Deploy to Compute Engine
         run: |
           gcloud compute ssh ${{ env.INSTANCE_NAME }} \
             --zone ${{ env.ZONE }} \
-            --command=" \
-              docker pull ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest \
-              && docker stop apex-app || true \
-              && docker rm apex-app || true \
-              && docker run -d --name apex-app -p ${{ env.APP_PORT }} ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest"
-              
+            --command="gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev && \
+              docker pull ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest && \
+              docker stop apex-app || true && \
+              docker rm apex-app || true && \
+              docker run -d --name apex-app -p ${{ env.APP_PORT }} ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest"
