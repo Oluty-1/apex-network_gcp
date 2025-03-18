@@ -3,7 +3,7 @@ name: Build and Push Docker Image to GCR
 on:
   push:
     branches:
-      - main
+      - mcloud-run
 env:
   GCP_PROJECT_ID: genial-union-452320-a6
   REGION: us-east1
@@ -12,6 +12,8 @@ env:
   INSTANCE_NAME: apex-engine     
   ZONE: us-east1-d          
   APP_PORT: 3000:3000  
+  SERVICE_NAME: apexapp
+  SECRET_NAME: apex-secrets 
 
 jobs:
   build-and-push:
@@ -46,12 +48,32 @@ jobs:
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:$BUILD_NUMBER
 
 
-      - name: Deploy to Compute Engine
+  deploy-to-cloud-run:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Google Cloud Auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+  
+      - name: Deploy to Cloud Run
         run: |
-          gcloud compute ssh ${{ env.INSTANCE_NAME }} \
-            --zone ${{ env.ZONE }} \
-            --command="gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev && \
-              docker pull ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest && \
-              docker stop apex-app || true && \
-              docker rm apex-app || true && \
-              docker run -d --name apex-app -p ${{ env.APP_PORT }} ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest"
+          # Fetch secret keys from JSON
+          SECRET_JSON=$(gcloud secrets versions access latest --secret=${{ env.SECRET_NAME }} --project=${{ env.GCP_PROJECT_ID }})
+          SECRET_KEYS=$(echo "$SECRET_JSON" | jq -r 'keys[]')
+  
+          # Build --set-secrets arguments dynamically
+          SECRET_ARGS=""
+          for key in $SECRET_KEYS; do
+            SECRET_ARGS+="--set-secrets=$key=${{ env.SECRET_NAME }}:latest "
+          done
+  
+          # Deploy with dynamic secrets
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            $SECRET_ARGS \
+            --port 3000
