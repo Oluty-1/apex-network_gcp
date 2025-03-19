@@ -60,14 +60,14 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           # Fetch secret keys from JSON
-          SECRET_JSON=$(gcloud secrets versions access latest --secret=${{ env.SECRET_NAME }} --project=${{ env.GCP_PROJECT_ID }})
-          SECRET_KEYS=$(echo "$SECRET_JSON" | jq -r 'keys[]')
+          # SECRET_JSON=$(gcloud secrets versions access latest --secret=${{ env.SECRET_NAME }} --project=${{ env.GCP_PROJECT_ID }})
+          # SECRET_KEYS=$(echo "$SECRET_JSON" | jq -r 'keys[]')
   
           # Build --set-secrets arguments dynamically
-          SECRET_ARGS=""
-          for key in $SECRET_KEYS; do
-            SECRET_ARGS+="--set-secrets=$key=${{ env.SECRET_NAME }}:latest "
-          done
+          # SECRET_ARGS=""
+          # for key in $SECRET_KEYS; do
+          #   SECRET_ARGS+="--set-secrets=$key=${{ env.SECRET_NAME }}:latest "
+          # done
   
           # Deploy with dynamic secrets
           gcloud run deploy ${{ env.SERVICE_NAME }} \
@@ -75,7 +75,7 @@ jobs:
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            $SECRET_ARGS \
+            # $SECRET_ARGS \
             --port 3000
             --cpu 1 \
             --memory 1Gi \
