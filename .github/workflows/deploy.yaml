@@ -59,11 +59,6 @@ jobs:
   
       - name: Deploy to Cloud Run
         run: |
-          # Fetch secret keys from JSON
-          # SECRET_JSON=$(gcloud secrets versions access latest --secret=${{ env.SECRET_NAME }} --project=${{ env.GCP_PROJECT_ID }})
-          # SECRET_KEYS=$(echo "$SECRET_JSON" | jq -r 'keys[]')
-
-  
           # Deploy with dynamic secrets
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest \
@@ -71,6 +66,6 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --port 3000 \
-            --set-env-vars "SECRET_NAME=duality-secrets,GCP_PROJECT=${{ env.GCP_PROJECT_ID }}"
+            --set-env-vars "SECRET_NAME=a-secrets,GCP_PROJECT=${{ env.GCP_PROJECT_ID }}"
             # --cpu 1 \
             # --memory 1Gi \
