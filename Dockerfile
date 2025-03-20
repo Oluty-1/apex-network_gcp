@@ -29,11 +29,18 @@ WORKDIR /app
 COPY --from=build_image /build/apex_network ./apex_network
 
 # Inject environment variables directly into the image
-ENV PORT=3000
-ENV DB_URL=postgresql://apex_gcp_db_user:fkjBqF5GqYAbXWK8ewwwXshdT8UeFcOG@dpg-cv2qatfnoe9s73b9m4fg-a.ohio-postgres.render.com/apex_gcp_db
+# ENV PORT=3000
+# ENV DB_URL=postgresql://apex_gcp_db_user:fkjBqF5GqYAbXWK8ewwwXshdT8UeFcOG@dpg-cv2qatfnoe9s73b9m4fg-a.ohio-postgres.render.com/apex_gcp_db
 
 # Expose the application port
 EXPOSE 3000
+
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Set entrypoint (preserves CMD from original Dockerfile)
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Command to run the application
 CMD [ "./apex_network", "apex_network_api" ]
