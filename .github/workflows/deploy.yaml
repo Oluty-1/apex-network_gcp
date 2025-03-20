@@ -3,7 +3,7 @@ name: Build and Push Docker Image to GCR
 on:
   push:
     branches:
-      - cloud-run
+      - cloud-ru
 env:
   GCP_PROJECT_ID: genial-union-452320-a6
   REGION: us-east1
@@ -13,7 +13,7 @@ env:
   ZONE: us-east1-d          
   APP_PORT: 3000:3000  
   SERVICE_NAME: apexapp
-  SECRET_NAME: apex-secrets 
+  SECRET_NAME: a-secrets 
 
 jobs:
   build-and-push:
@@ -75,7 +75,7 @@ jobs:
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            # $SECRET_ARGS \
-            # --port 3000
+            --port 3000 \
+            --set-env-vars "SECRET_NAME=duality-secrets,GCP_PROJECT=${{ env.GCP_PROJECT_ID }}"
             # --cpu 1 \
             # --memory 1Gi \
