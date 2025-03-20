@@ -1,11 +1,14 @@
 #!/bin/sh
+set -e
 
-# Parse APP_CONFIG and export variables
-# eval $(echo $APP_CONFIG | jq -r 'to_entries | map("export " + .key + "=\"" + (.value | tostring) + "\"") | .[]')
-eval $(echo $APP_CONFIG | jq -r 'to_entries | .[] | "export \(.key)=\(.value)"')
+# Fetch secrets from GCP Secret Manager if SECRET_NAME is set
+if [ -n "$SECRET_NAME" ]; then
+  echo "Loading secrets from $SECRET_NAME..."
+  export $( \
+    gcloud secrets versions access latest --secret="$SECRET_NAME" --project="$GCP_PROJECT" | \
+    jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' \
+  )
+fi
 
-# Execute the main application
-# exec ./apex_network apex_network_api
-
-# Run the main application
+# Run the main application command
 exec "$@"
