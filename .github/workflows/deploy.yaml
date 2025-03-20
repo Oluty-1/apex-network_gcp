@@ -56,7 +56,7 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-  
+
       - name: Deploy to Cloud Run
         run: |
           # Deploy with dynamic secrets
@@ -66,6 +66,7 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --port 3000 \
-            --set-env-vars "SECRET_NAME=a-secrets,GCP_PROJECT=${{ env.GCP_PROJECT_ID }}"
-            # --cpu 1 \
-            # --memory 1Gi \
+            --set-env-vars "SECRET_NAME=${{ env.SECRET_NAME }},GCP_PROJECT=${{ env.GCP_PROJECT_ID }}" \
+            --service-account="${{ env.SERVICE_NAME }}-sa@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
+                  # --cpu 1 \
+                  # --memory 1Gi \
