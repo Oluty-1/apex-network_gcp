@@ -41,7 +41,7 @@ EXPOSE 3000
 
 # Copy entrypoint script
 COPY entrypoint.sh .
-RUN chmod +x /entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 # Set entrypoint (preserves CMD from original Dockerfile)
 ENTRYPOINT ["/entrypoint.sh"]
