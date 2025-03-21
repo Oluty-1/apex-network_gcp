@@ -1,14 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
-# Fetch secrets from GCP Secret Manager if SECRET_NAME is set
-if [ -n "$SECRET_NAME" ]; then
-  echo "Loading secrets from $SECRET_NAME..."
-  export $( \
-    gcloud secrets versions access latest --secret="$SECRET_NAME" --project="$GCP_PROJECT" | \
-    jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' \
-  )
+# Parse ENV_VARS_JSON if it exists
+if [ -n "$ENV_VARS_JSON" ]; then
+  echo "🔑 Parsing environment variables from JSON secret..."
+  echo "$ENV_VARS_JSON" | jq -r 'to_entries|map("export \(.key)=\(.value|tostring)")|.[]' | sh
 fi
 
-# Run the main application command
+# Start application
 exec "$@"
