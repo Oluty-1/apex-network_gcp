@@ -57,8 +57,8 @@ jobs:
           echo "Listing working directory..."
           docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /app
           
-          echo "Checking file type..."
-          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest file /app/entrypoint.sh || echo "File not found"
+          echo "Checking entrypoint.sh content..."
+          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest cat /app/entrypoint.sh
 
 
       - name: Push Docker image to Artifact Registry
