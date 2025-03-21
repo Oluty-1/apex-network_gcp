@@ -23,6 +23,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Debug step before building to verify source files
+      - name: Debug repository content
+        run: |
+          echo "Current directory contents:"
+          ls -la
+          echo "Does entrypoint.sh exist?"
+          test -f entrypoint.sh && echo "YES - entrypoint.sh found" || echo "NO - entrypoint.sh NOT found"
+          if [ -f entrypoint.sh ]; then
+            echo "Content of entrypoint.sh:"
+            cat entrypoint.sh
+          else
+            echo "Creating entrypoint.sh for testing:"
+            cat > entrypoint.sh << 'EOF'
+            #!/bin/sh
+            set -e
+            
+            # Parse ENV_VARS_JSON if it exists
+            if [ -n "$ENV_VARS_JSON" ]; then
+              echo "🔑 Parsing environment variables from JSON secret..."
+              echo "$ENV_VARS_JSON" | jq -r 'to_entries|map("export \(.key)=\(.value|tostring)")|.[]' | sh
+            fi
+            
+            # Start application
+            exec "$@"
+            EOF
+            
+            chmod +x entrypoint.sh
+            echo "Created entrypoint.sh with content:"
+            cat entrypoint.sh
+          fi
 
       - name: Set up Google Cloud Auth
         uses: google-github-actions/auth@v1
