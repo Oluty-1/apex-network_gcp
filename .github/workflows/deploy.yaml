@@ -73,6 +73,6 @@ jobs:
             --allow-unauthenticated \
             --port 3000 \
             --set-env-vars "SECRET_NAME=${{ env.SECRET_NAME }},GCP_PROJECT=${{ env.GCP_PROJECT_ID }}" \
-            --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+            # --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
             --cpu 1 \
-            --memory 1Gi
+            --memory 128 MiB
