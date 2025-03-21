@@ -36,7 +36,7 @@ jobs:
           else
             echo "Creating entrypoint.sh for testing:"
             cat > entrypoint.sh << 'EOF'
-            #!/bin/sh
+            #!/bin/bash
             set -e
             
             # Parse ENV_VARS_JSON if it exists
