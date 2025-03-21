@@ -88,5 +88,4 @@ jobs:
             --set-secrets=ENV_VARS_JSON=a-secrets:latest \
             # --service-account=... \
             --cpu 1 \
-            --memory 1Gi
             --memory 128 MiB
