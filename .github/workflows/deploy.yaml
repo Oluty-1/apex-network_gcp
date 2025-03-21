@@ -47,7 +47,7 @@ jobs:
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:$BUILD_NUMBER
 
-
+  
   deploy-to-cloud-run:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -56,10 +56,16 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-
+  
       - name: Deploy to Cloud Run
         run: |
-          # Deploy with dynamic secrets
+          # # First grant secret access to service account
+          # PROJECT_NUMBER=$(gcloud projects describe ${{ env.GCP_PROJECT_ID }} --format='value(projectNumber)')
+          # gcloud secrets add-iam-policy-binding ${{ env.SECRET_NAME }} \
+          #   --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+          #   --role="roles/secretmanager.secretAccessor"
+  
+          # Deploy with minimal env vars
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest \
             --region ${{ env.REGION }} \
@@ -67,6 +73,6 @@ jobs:
             --allow-unauthenticated \
             --port 3000 \
             --set-env-vars "SECRET_NAME=${{ env.SECRET_NAME }},GCP_PROJECT=${{ env.GCP_PROJECT_ID }}" \
-            --service-account="${{ env.SERVICE_NAME }}-sa@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
-                  # --cpu 1 \
-                  # --memory 1Gi \
+            --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+            --cpu 1 \
+            --memory 1Gi
