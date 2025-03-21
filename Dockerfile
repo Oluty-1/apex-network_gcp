@@ -44,8 +44,8 @@ COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
 # Set entrypoint (preserves CMD from original Dockerfile)
-ENTRYPOINT ["/app/entrypoint.sh"]
+# ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Command to run the application
-# CMD [ "./apex_network", "apex_network_api" ]
+CMD [ "./apex_network", "apex_network_api" ]
 
