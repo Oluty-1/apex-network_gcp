@@ -41,6 +41,19 @@ jobs:
           BUILD_NUMBER=${{ github.run_number }}
           docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:$BUILD_NUMBER .
 
+      # Debug step after building to verify image contents
+      - name: Verify Docker image contents
+        run: |
+          echo "Inspecting Docker image contents..."
+          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /
+          
+          echo "Checking if entrypoint.sh exists and is executable..."
+          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest test -x /entrypoint.sh && echo "Entrypoint exists and is executable" || echo "Entrypoint NOT found or NOT executable"
+          
+          echo "Checking entrypoint.sh content (if it exists)..."
+          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest cat /entrypoint.sh || echo "Could not read entrypoint.sh"
+
+
       - name: Push Docker image to Artifact Registry
         run: |
           BUILD_NUMBER=${{ github.run_number }}
