@@ -54,11 +54,11 @@ jobs:
           echo "Listing root directory..."
           docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /
           
-          echo "Listing working directory..."
-          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /app
+          # echo "Listing working directory..."
+          # docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /app
           
-          echo "Checking entrypoint.sh content..."
-          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest cat /app/entrypoint.sh
+          # echo "Checking entrypoint.sh content..."
+          # docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest cat /app/entrypoint.sh
 
 
       - name: Push Docker image to Artifact Registry
