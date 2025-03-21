@@ -47,5 +47,5 @@ RUN chmod +x entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Command to run the application
-CMD [ "./apex_network", "apex_network_api" ]
+# CMD [ "./apex_network", "apex_network_api" ]
 
