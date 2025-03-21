@@ -59,20 +59,14 @@ jobs:
   
       - name: Deploy to Cloud Run
         run: |
-          # # First grant secret access to service account
-          # PROJECT_NUMBER=$(gcloud projects describe ${{ env.GCP_PROJECT_ID }} --format='value(projectNumber)')
-          # gcloud secrets add-iam-policy-binding ${{ env.SECRET_NAME }} \
-          #   --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
-          #   --role="roles/secretmanager.secretAccessor"
-  
-          # Deploy with minimal env vars
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest \
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated \
             --port 3000 \
-            --set-env-vars "SECRET_NAME=${{ env.SECRET_NAME }},GCP_PROJECT=${{ env.GCP_PROJECT_ID }}" \
-            # --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+            --set-secrets=ENV_VARS_JSON=a-secrets:latest \
+            --service-account=... \
             --cpu 1 \
+            --memory 1Gi
             --memory 128 MiB
