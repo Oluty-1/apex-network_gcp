@@ -40,7 +40,7 @@ COPY --from=build_image /build/apex_network ./apex_network
 EXPOSE 3000
 
 # Copy entrypoint script
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh .
 RUN chmod +x /entrypoint.sh
 
 # Set entrypoint (preserves CMD from original Dockerfile)
