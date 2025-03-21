@@ -22,8 +22,13 @@ RUN go build -o /build/apex_network
 # Step 2: Create a minimal container to run the application
 FROM alpine:latest
 
-# After FROM alpine:latest
-RUN apk add --no-cache jq
+# # After FROM alpine:latest
+# RUN apk add --no-cache jq
+
+RUN apt-get update && \
+    apt-get install -y jq curl && \
+    curl -sSL https://sdk.cloud.google.com | bash && \
+    ln -s /root/google-cloud-sdk/bin/gcloud /usr/bin/gcloud
 
 # Set a working directory in the new container
 WORKDIR /app
