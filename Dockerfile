@@ -46,20 +46,7 @@ EXPOSE 3000
 # ENTRYPOINT ["/app/entrypoint.sh"]
 
 
-
 # Create a wrapper script directly in the Dockerfile
-# RUN echo '#!/bin/sh' > /app/wrapper.sh && \
-#     echo 'set -e' >> /app/wrapper.sh && \
-#     echo '# Parse ENV_VARS_JSON if it exists' >> /app/wrapper.sh && \
-#     echo 'if [ -n "$ENV_VARS_JSON" ]; then' >> /app/wrapper.sh && \
-#     echo '  echo "🔑 Parsing environment variables from JSON secret..."' >> /app/wrapper.sh && \
-#     echo '  echo "$ENV_VARS_JSON" | jq -r '\''to_entries|map("export \(.key)=\(.value|tostring)")|.[]'\'' | sh' >> /app/wrapper.sh && \
-#     echo 'fi' >> /app/wrapper.sh && \
-#     echo '# Start application' >> /app/wrapper.sh && \
-#     echo 'exec "$@"' >> /app/wrapper.sh && \
-#     chmod +x /app/wrapper.sh
-
-
 RUN echo '#!/bin/sh' > /app/wrapper.sh && \
     echo 'set -e' >> /app/wrapper.sh && \
     echo '# Parse ENV_VARS_JSON if it exists' >> /app/wrapper.sh && \
