@@ -86,6 +86,5 @@ jobs:
             --allow-unauthenticated \
             --port 3000 \
             --set-secrets=ENV_VARS_JSON=a-secrets:latest \
-            # --service-account=... \
             --cpu 1 \
-            --memory 128 MiB
+            --memory 128 Mi
