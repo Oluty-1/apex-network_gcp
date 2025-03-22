@@ -3,7 +3,7 @@ name: Build and Push Docker Image to GCR
 on:
   push:
     branches:
-      - main
+      # - main
 env:
   GCP_PROJECT_ID: genial-union-452320-a6
   REGION: us-east1
