@@ -48,7 +48,7 @@ EXPOSE 3000
 
 
 # Create a wrapper script directly in the Dockerfile
-RUN echo '#!/bin/sh' > /app/wrapper.sh && \
+RUN echo '#!/bin/bash' > /app/wrapper.sh && \
     echo 'set -e' >> /app/wrapper.sh && \
     echo '# Parse ENV_VARS_JSON if it exists' >> /app/wrapper.sh && \
     echo 'if [ -n "$ENV_VARS_JSON" ]; then' >> /app/wrapper.sh && \
