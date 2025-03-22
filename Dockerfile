@@ -59,6 +59,7 @@ RUN echo '#!/bin/sh' > /app/wrapper.sh && \
     echo 'exec "$@"' >> /app/wrapper.sh && \
     chmod +x /app/wrapper.sh
 
+    
 # Set the wrapper script as the entrypoint
 ENTRYPOINT ["/app/wrapper.sh"]
 
