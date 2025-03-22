@@ -87,4 +87,4 @@ jobs:
             --port 3000 \
             --set-secrets=ENV_VARS_JSON=a-secrets:latest \
             --cpu 1 \
-            --memory 128 MiB
+            --memory 128Mi
