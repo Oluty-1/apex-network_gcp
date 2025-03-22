@@ -65,7 +65,7 @@ RUN echo '#!/bin/sh' > /app/wrapper.sh && \
     echo '# Parse ENV_VARS_JSON if it exists' >> /app/wrapper.sh && \
     echo 'if [ -n "$ENV_VARS_JSON" ]; then' >> /app/wrapper.sh && \
     echo '  echo "🔑 Parsing environment variables from JSON secret..."' >> /app/wrapper.sh && \
-    echo '  eval "$(echo "$ENV_VARS_JSON" | jq -r '\''to_entries|map("export \(.key)=\(.value|tostring)")|.[]'\''"' >> /app/wrapper.sh && \
+    echo '  eval "$(echo "$ENV_VARS_JSON" | jq -r '\''to_entries|map("export \(.key)=\(.value|tostring)")|.[]'\'')"' >> /app/wrapper.sh && \
     echo '  # Debug: Print all environment variables' >> /app/wrapper.sh && \
     echo '  echo "Environment variables:"' >> /app/wrapper.sh && \
     echo '  env | grep -v SECRET' >> /app/wrapper.sh && \
