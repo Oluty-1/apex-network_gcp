@@ -49,16 +49,16 @@ jobs:
           docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:$BUILD_NUMBER .
 
       # Debug step after building to verify image contents
-      # - name: Verify Docker image contents
-      #   run: |
-      #     echo "Listing root directory..."
-      #     docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /
+      - name: Verify Docker image contents
+        run: |
+          echo "Listing root directory..."
+          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /
           
-      #     echo "Listing working directory..."
-      #     docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /app
+          echo "Listing working directory..."
+          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /app
           
-      #     echo "Checking entrypoint.sh content..."
-      #     docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest cat /app/wrapper.sh
+          echo "Checking entrypoint.sh content..."
+          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest cat /app/wrapper.sh
 
 
       - name: Push Docker image to Artifact Registry
