@@ -38,15 +38,33 @@ COPY --from=build_image /build/apex_network ./apex_network
 # Expose the application port
 EXPOSE 3000
 
-# Copy entrypoint script
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
+# # Copy entrypoint script
+# COPY entrypoint.sh .
+# RUN chmod +x entrypoint.sh
 
-# Set entrypoint (preserves CMD from original Dockerfile)
+# # Set entrypoint (preserves CMD from original Dockerfile)
 # ENTRYPOINT ["/app/entrypoint.sh"]
 
-CMD [ "/app/entrypoint.sh" ]
+
+
+# Create a wrapper script directly in the Dockerfile
+RUN echo '#!/bin/sh' > /app/wrapper.sh && \
+    echo 'set -e' >> /app/wrapper.sh && \
+    echo '# Parse ENV_VARS_JSON if it exists' >> /app/wrapper.sh && \
+    echo 'if [ -n "$ENV_VARS_JSON" ]; then' >> /app/wrapper.sh && \
+    echo '  echo "🔑 Parsing environment variables from JSON secret..."' >> /app/wrapper.sh && \
+    echo '  echo "$ENV_VARS_JSON" | jq -r '\''to_entries|map("export \(.key)=\(.value|tostring)")|.[]'\'' | sh' >> /app/wrapper.sh && \
+    echo 'fi' >> /app/wrapper.sh && \
+    echo '# Start application' >> /app/wrapper.sh && \
+    echo 'exec "$@"' >> /app/wrapper.sh && \
+    chmod +x /app/wrapper.sh
+
+# Set the wrapper script as the entrypoint
+ENTRYPOINT ["/app/wrapper.sh"]
+
+
 
 # Command to run the application
-# CMD [ "./apex_network", "apex_network_api" ]
+CMD [ "./apex_network", "apex_network_api" ]
+
 
