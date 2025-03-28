@@ -1,0 +1,10 @@
+apiVersion: v2
+name: apexapp
+description: A Helm chart for deploying the Apex Go application on GKE
+
+type: application
+
+
+version: 0.1.0
+
+appVersion: "latest"

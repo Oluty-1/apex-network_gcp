@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apexapp.fullname" . }}
+  labels:
+    app: {{ include "apexapp.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "apexapp.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "apexapp.name" . }}
+    spec:
+      containers:
+        - name: {{ include "apexapp.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: PORT
+              value: "{{ .Values.env.PORT }}"
+            - name: DB_URL
+              value: "{{ .Values.env.DB_URL }}"
