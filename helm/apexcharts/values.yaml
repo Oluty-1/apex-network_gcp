@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: us-east1-docker.pkg.dev/<YOUR_GCP_PROJECT>/<YOUR_REPO>/apexapp
+  repository: us-east1-docker.pkg.dev/genial-union-452320-a6/apex/apexapp
   pullPolicy: IfNotPresent
   tag: "latest"
 
