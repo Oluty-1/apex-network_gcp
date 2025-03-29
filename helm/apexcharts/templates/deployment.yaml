@@ -24,3 +24,11 @@ spec:
               value: "{{ .Values.env.PORT }}"
             - name: DB_URL
               value: "{{ .Values.env.DB_URL }}"
+              
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "gcp-secret-provider"

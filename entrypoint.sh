@@ -1,11 +1,10 @@
 #!/bin/sh
+set -e
 
-# Parse APP_CONFIG and export variables
-# eval $(echo $APP_CONFIG | jq -r 'to_entries | map("export " + .key + "=\"" + (.value | tostring) + "\"") | .[]')
-eval $(echo $APP_CONFIG | jq -r 'to_entries | .[] | "export \(.key)=\(.value)"')
+# Parse ENV_VARS_JSON if it exists
+if [ -n "$ENV_VARS_JSON" ]; then
+  eval "$(echo "$ENV_VARS_JSON" | jq -r 'to_entries|map("export \(.key)=\(.value|tostring)")|.[]')"
+fi
 
-# Execute the main application
-# exec ./apex_network apex_network_api
-
-# Run the main application
+# Start application
 exec "$@"

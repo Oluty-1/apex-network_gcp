@@ -18,9 +18,12 @@ RUN go mod download
 RUN go build -o /build/apex_network
 
 
-
 # Step 2: Create a minimal container to run the application
 FROM alpine:latest
+
+# After FROM alpine:latest
+RUN apk add --no-cache jq
+
 
 # Set a working directory in the new container
 WORKDIR /app
@@ -35,6 +38,15 @@ COPY --from=build_image /build/apex_network ./apex_network
 # Expose the application port
 EXPOSE 3000
 
+# Copy entrypoint script
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+# Set entrypoint (preserves CMD from original Dockerfile)
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+
 # Command to run the application
 CMD [ "./apex_network", "apex_network_api" ]
+
 
