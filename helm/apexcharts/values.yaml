@@ -9,6 +9,6 @@ service:
   type: LoadBalancer  # Use NodePort if you prefer
   port: 3000
 
-env:
-  PORT: "3000"
-  DB_URL: "postgresql://apex_gcp_db_user:fkjBqF5GqYAbXWK8ewwwXshdT8UeFcOG@dpg-cv2qatfnoe9s73b9m4fg-a.ohio-postgres.render.com/apex_gcp_db"
+# env:
+#   PORT: "3000"
+#   DB_URL: "postgresql://apex_gcp_db_user:fkjBqF5GqYAbXWK8ewwwXshdT8UeFcOG@dpg-cv2qatfnoe9s73b9m4fg-a.ohio-postgres.render.com/apex_gcp_db"
