@@ -38,12 +38,39 @@ COPY --from=build_image /build/apex_network ./apex_network
 # Expose the application port
 EXPOSE 3000
 
-# Copy entrypoint script
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
 
-# Set entrypoint (preserves CMD from original Dockerfile)
+
+# Create the entrypoint script directly in the Dockerfile
+RUN echo '#!/bin/sh\n\
+set -e\n\
+\n\
+# Check if the secrets file exists and load the environment variables\n\
+if [ -f /mnt/secrets/apexsecrets.json ]; then\n\
+  echo "🔑 Loading secrets from /mnt/secrets/apexsecrets.json..."\n\
+  # Debug: Print the contents of the secrets file\n\
+  cat /mnt/secrets/apexsecrets.json\n\
+  # Load each key-value pair as an environment variable\n\
+  export $(jq -r "to_entries|map(\\(.key)=\\(.value|tostring))|.[]" /mnt/secrets/apexsecrets.json)\n\
+  # Debug: Confirm DB_URL is set\n\
+  echo "DEBUG: DB_URL is set to: $DB_URL"\n\
+fi\n\
+\n\
+# Start the application\n\
+exec "$@"' > /app/entrypoint.sh
+
+# Make the entrypoint script executable
+RUN chmod +x /app/entrypoint.sh
+
+# Set entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+
+# # Copy entrypoint script
+# COPY entrypoint.sh .
+# RUN chmod +x entrypoint.sh
+
+# # Set entrypoint (preserves CMD from original Dockerfile)
+# ENTRYPOINT ["/app/entrypoint.sh"]
 
 
 # Command to run the application
