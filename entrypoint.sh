@@ -12,12 +12,18 @@
 
 
 
+
+
+
 #!/bin/sh
 set -e
 
 # Check if the secrets file exists and load the environment variables
 if [ -f /mnt/secrets/apexsecrets.json ]; then
   echo "🔑 Loading secrets from /mnt/secrets/apexsecrets.json..."
+  # Debug: Print the contents of the secrets file (remove in production)
+  cat /mnt/secrets/apexsecrets.json
+  # Load each key-value pair as an environment variable
   eval "$(jq -r 'to_entries|map("export \(.key)=\(.value|tostring)")|.[]' /mnt/secrets/apexsecrets.json)"
 fi
 
