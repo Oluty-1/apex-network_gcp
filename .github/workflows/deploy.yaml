@@ -40,18 +40,17 @@ jobs:
           docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest -t ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:$BUILD_NUMBER .
 
 
-      # Debug step after building to verify image contents
+      # Debug step after building to verify the presence of the entrypoint script
       - name: Verify Docker image contents
         run: |
-          echo "Listing root directory..."
+          echo "Listing root directory:"
           docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /
           
-          echo "Listing working directory..."
+          echo "Listing /app directory:"
           docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest ls -la /app
           
-          echo "Checking entrypoint.sh content..."
-          # docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest cat /app/wrapper.sh
-          docker run --rm ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest cat /app/entrypoint.sh
+          echo "Displaying /app/entrypoint.sh content:"
+          docker run --rm --entrypoint cat ${{ env.REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest /app/entrypoint.sh
 
 
 
