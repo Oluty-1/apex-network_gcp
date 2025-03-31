@@ -22,13 +22,15 @@ spec:
           env:
             - name: PORT
               value: "{{ .Values.env.PORT }}"
-            - name: DB_URL
-              value: "{{ .Values.env.DB_URL }}"
-              
+          volumeMounts:
+            - name: secrets-store
+              mountPath: /mnt/secrets
+              readOnly: true
       volumes:
-        - name: secrets-store-inline
+        - name: secrets-store
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
               secretProviderClass: "gcp-secret-provider"
+
