@@ -40,29 +40,31 @@ EXPOSE 3000
 
 
 
-# Create the entrypoint script directly in the Dockerfile
-RUN echo '#!/bin/sh\n\
-set -e\n\
-\n\
-# Check if the secrets file exists and load the environment variables\n\
-if [ -f /mnt/secrets/apexsecrets.json ]; then\n\
-  echo "🔑 Loading secrets from /mnt/secrets/apexsecrets.json..."\n\
-  # Debug: Print the contents of the secrets file\n\
-  cat /mnt/secrets/apexsecrets.json\n\
-  # Load each key-value pair as an environment variable\n\
-  export $(jq -r "to_entries|map(\\(.key)=\\(.value|tostring))|.[]" /mnt/secrets/apexsecrets.json)\n\
-  # Debug: Confirm DB_URL is set\n\
-  echo "DEBUG: DB_URL is set to: $DB_URL"\n\
-fi\n\
-\n\
-# Start the application\n\
-exec "$@"' > /app/entrypoint.sh
+# Create entrypoint script directly in the Dockerfile
+RUN echo '#!/bin/sh' > /app/entrypoint.sh && \
+    echo 'set -e' >> /app/entrypoint.sh && \
+    echo '' >> /app/entrypoint.sh && \
+    echo '# Check if the secrets file exists and load the environment variables' >> /app/entrypoint.sh && \
+    echo 'if [ -f /mnt/secrets/apexsecrets.json ]; then' >> /app/entrypoint.sh && \
+    echo '  echo "🔑 Loading secrets from /mnt/secrets/apexsecrets.json..."' >> /app/entrypoint.sh && \
+    echo '  # Debug: Print the contents of the secrets file (remove in production)' >> /app/entrypoint.sh && \
+    echo '  cat /mnt/secrets/apexsecrets.json' >> /app/entrypoint.sh && \
+    echo '  # Load each key-value pair as an environment variable' >> /app/entrypoint.sh && \
+    echo '  eval "$(jq -r '"'"'to_entries|map("export \(.key)=\(.value|tostring)")|.[]'"'"' /mnt/secrets/apexsecrets.json)"' >> /app/entrypoint.sh && \
+    echo '  # Debug: Confirm a specific environment variable is set (e.g., DB_URL)' >> /app/entrypoint.sh && \
+    echo '  echo "DEBUG: DB_URL is set to: $DB_URL"' >> /app/entrypoint.sh && \
+    echo 'fi' >> /app/entrypoint.sh && \
+    echo '' >> /app/entrypoint.sh && \
+    echo '# Start the application' >> /app/entrypoint.sh && \
+    echo 'exec "$@"' >> /app/entrypoint.sh && \
+    chmod +x /app/entrypoint.sh
 
 # Make the entrypoint script executable
 RUN chmod +x /app/entrypoint.sh
 
 # Set entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
+
 
 
 # # Copy entrypoint script
