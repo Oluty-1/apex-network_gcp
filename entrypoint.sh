@@ -14,3 +14,11 @@ fi
 
 # Start the application
 exec "$@"
+
+
+
+# #!/bin/bash
+# if [ -f /mnt/secrets/apexsecrets.json ]; then
+#   eval "$(jq -r 'to_entries | .[] | "export \(.key)=\(.value)"' /mnt/secrets/apexsecrets.json)"
+# fi
+# exec "$@"
