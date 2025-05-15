@@ -19,9 +19,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.port }}
-        env:
-        - name: PORT
-          value: "{{ .Values.env.PORT }}"
+
         volumeMounts:
         - name: secrets-store
           mountPath: /mnt/secrets
